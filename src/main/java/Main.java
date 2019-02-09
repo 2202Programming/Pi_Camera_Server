@@ -183,6 +183,7 @@ public final class Main {
     System.out.println("Starting camera '" + config.name + "' on " + config.path);
     CameraServer inst = CameraServer.getInstance();
     UsbCamera camera = new UsbCamera(config.name, config.path);
+
     MjpegServer server = inst.startAutomaticCapture(camera);
 
     Gson gson = new GsonBuilder().create();
@@ -192,6 +193,12 @@ public final class Main {
 
     if (config.streamConfig != null) {
       server.setConfigJson(gson.toJson(config.streamConfig));
+    }
+
+    // Sets Default FPS for camera if configurations do not have them
+    if (!config.config.has("fps")) {
+      int defaultFPS = 10;
+      camera.setFPS(defaultFPS);
     }
 
     return camera;
